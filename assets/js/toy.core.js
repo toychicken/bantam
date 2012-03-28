@@ -10,5 +10,7 @@
 */
 
 (function (core){
+    
+    alert('is this working now?');
 	
 }(toy.core = toy.core || {} ));
