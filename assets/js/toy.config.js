@@ -2,7 +2,7 @@
 
 // let's talk about namespacing. Ours is toy. If you want another one... well that's for you to work out. At the moment.
 
-var toy = {},
+var toy = {};
 	
 	
 

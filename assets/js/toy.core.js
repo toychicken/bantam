@@ -10,7 +10,6 @@
 */
 
 (function (core){
-    
-    alert('is this working now?');
+    alert('how about now?');
 	
 }(toy.core = toy.core || {} ));
