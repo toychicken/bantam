@@ -9,7 +9,7 @@
 	# stores some commonly used page elements (as a shortcut, because we like compression) i.e. WIN, not window, DOC, not document etc.		
 */
 
+
 (function (core){
-    alert('how about now?');
-	
+    	
 }(toy.core = toy.core || {} ));
