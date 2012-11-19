@@ -14,6 +14,7 @@ I'm hoping to make this suitably robust for use in node.js too. The idea being t
 
 ## Thanks
 This is based on work done by Peter Higgins (dante@dojotoolkit.org), which was made known to me by the inimitable Rebecca Murphey. http://rmurphey.com/
+Finally, I would not have been able to do this without the help of LucyKav, who rocks.
 
 
 
