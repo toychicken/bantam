@@ -11,6 +11,7 @@
 	* Would it be possible / useful to be able to subscribe many callback functions to one event - or should we simply subscribe many times?
 	* Is a N to 0 iteration over an array really faster than 0 to N?
 	Put better comments in  :)
+	Create a no-conflict mode for the global;
 */
 
 /*
@@ -112,4 +113,4 @@ File: pubsub.js
 
 	//return me;
 
-})($M = {});
+})(bantam = {});
