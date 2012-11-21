@@ -12,15 +12,18 @@
         	p, li {font-size:1.4rem; line-height:1.3; padding-bottom:0.6rem;}
         	body script, code {font:normal 1.3rem/1.4 'Source Sans Pro', 'Consolas', 'Courier New', monospace; white-space: pre; display:block;background:#333; padding:1rem; color:#fed;}
         	.hidden {display:none;}
-        	.buttons, .toggle {background:#ddd; border:1px solid #888; border-bottom-color:#fff; border-right-color: #fff; border-radius: 1rem; list-style: none; padding:0; overflow:hidden;}
+        	.buttons, .toggle {background:#ddd; box-shadow: 1px 1px 3px #333, -1px -1px 3px #fff; border-radius: 1rem; list-style: none; padding:0; overflow:hidden;}
 
+                .toggle { box-shadow:inset 1px 1px 3px #333, inset -1px -1px 3px #fff;}
         		.toggle li, .buttons li {padding:1.4rem; cursor:pointer; box-sizing:border-box; }
-        		.toggle li { width:50%; padding: 1.4rem; display:inline-block; }
+        		.toggle li { width:50%; padding: 1.4rem; display:block;float:left; }
         		.toggle li.hidden {visibility:hidden;display:inline-block; }
 
         		.clicky {background:skyblue;}
         		#unsub_greet {background:palegreen;}
         		#resub_greet {background:goldenrod;}
+                #timer_start {background:green;}
+                #timer_stop {background:red;}
         		.blurty {background:orange;}
 
         </style>
@@ -42,7 +45,7 @@
         		<li>A Way to 'publish' events</li>
         		<li>A way to 'unsubscribe' from events</li>
         	</ul>
-        	<h3>Subscribe</h3>
+        	<h3 id="subscribe">Subscribe</h3>
         	<p>To subscribe, you need two things. An event, and something to do when that event happens.</p>
         	<p>First, we'll create a simple function that takes a variable, and does an alert.</p>
 
@@ -53,15 +56,15 @@ var boofar = function (msg) {
 }
 </script>
 
-			<p>Then, we create a subscription, listening for the '/onpage/click' event.</p>
+			<p>Then, we create a subscription, listening for the '/onpage/alert' event.</p>
 
 <script>
-bantam.sub('/onpage/click', boofar);
+bantam.sub('/onpage/alert', boofar);
 </script>
 
         	<p>Woot! Now you're ready to receive messages</p>
         	
-        	<h3>Publish</h3>
+        	<h3 id="publish">Publish</h3>
         	<p>In order to publish, you only need 1 thing. The event. In Bantam, the message is simply a string. We use a '/namespace/topic' format by convention, but it could be 'iClickedAthing' or 'BrandyMonkey33'</p>
         	<p>Of course, the event needs to be triggered by something. I don't think it's unreasonable to assume it might be a 'click'.</p>
 <code>
@@ -71,7 +74,7 @@ var links = document.getElementsByClassName('clicky')
 // bind a function to those clicks
 for (var i = links.length - 1; i >= 0; i--) {
 	links[i].onclick = function (e){
-		bantam.pub('/onpage/click');
+		bantam.pub('/onpage/alert');
 	}
 };
 </code>
@@ -79,7 +82,7 @@ for (var i = links.length - 1; i >= 0; i--) {
         		<li id="pub_greet" class="clicky">Click me!</li>
         	</menu>
 
-        	<h3>Unsubscribing</h3>
+        	<h3 id="unsubscribe">Unsubscribing</h3>
         	<p>Eventually, you might want to stop that event happening every time you click, so it's time to unsubscribe</p>
         	<p>We'll create a couple of links so you can subscribe &amp; unsubscribe to your hearts content.</p>
         	<p>Once you've unsubsribed, nothing's going to happen when you click the links</p>
@@ -93,13 +96,13 @@ var unlink = document.getElementById('unsub_greet');
 var relink = document.getElementById('resub_greet');
 
 unlink.onclick = function () {
-	bantam.unsub('/onpage/click', boofar);
+	bantam.unsub('/onpage/alert', boofar);
 	unlink.className = "hidden"; 
 	relink.className = "";
 };
 
 relink.onclick = function () {
-	bantam.sub('/onpage/click', boofar);
+	bantam.sub('/onpage/alert', boofar);
 	unlink.className = ""; 
 	relink.className = "hidden";
 }
@@ -107,7 +110,7 @@ relink.onclick = function () {
 
 			<p>The main thing to remember here is that the event is still fired. Every time you click one of the buttons, it's still publishing it's event, it's just that nothing is listening</p>
 
-			<h3>Variables</h3>
+			<h3 id="variables">Variables</h3>
         	<p>The next thing would be to pass some variables along with the event</p>
         	<p>Now, of course, we need to create a different subscription. This time, we'll store a message in a data-* attribute.</p>
 
@@ -119,7 +122,7 @@ var blurts = document.getElementsByClassName('blurty');
 for (var i = blurts.length - 1; i >= 0; i--) {
 	blurts[i].onclick = function (e) {
 		var msg = this.dataset.secret;
-		bantam.pub('/onpage/click', msg);
+		bantam.pub('/onpage/alert', msg);
 	}
 };
 </code>
@@ -128,9 +131,35 @@ for (var i = blurts.length - 1; i >= 0; i--) {
         		<li class="blurty" id="pub_var" data-secret="For your eyes only!">Click for a secret</li>
         	</menu>
 
-        	<p><em>If this isn't working - you need to scroll back up and resubscribe - you turned it off, remember?</em></p>
+        	<p><em>If this isn't working - you need to scroll back up and resubscribe - you may have turned it off, remember?</em></p>
 
-        	
+            <h3 id="why_pubsub">So, why Pub/Sub?</h3>
+
+            <p>There are loads of great resources on why a pub/sub approach is a good one, but it basically boils down to this</p>
+            <p><strong>You are separating your messaging from the DOM.</strong></p>
+
+            <p>This approach really comes into it's own when you're working with modular systems, such as output HTML generated by a CMS</p>
+
+            <p>Essentially, you make each module responsible for managing it's own dependencies. Then, using pubsub, you 'broadcast' the module's state as it does stuff.</p>
+            <p>Then, if there's another module that interacts with the first, all it has to do is listen for the output. If it doesn't hear anything, then it doesn't respond. If it does, it does. It's a great way to decouple communication between modules.</p>
+
+            <p>You could think of it like the difference between Facebook and Twitter. With Facebook, both parties have to be 'friends' before they can listen to each others status updates. However, with Twitter, you can send any number of updates into the ether and you have no idea of whether anyone is listening, unless of course you're following others.</p>
+
+            <p>There will be more on decoupled modular approaches to web design in some other work that I'm starting, that will make heavy use of Bantam, but for now, it's here for your pleasure.</p>
+
+            <h3 id="the_future">The future</h3>
+
+            <p>My aim is to improve Bantam from it's current basic state. Namely to include</p>
+            <ul>
+                <li>A simple Node.js integration so pub/sub messages can go back and forth to the backend in exactly the same format</li>
+                <li>Improve the context of 'where' the published event has come from. (At the moment, 'this' in the function call, is always bantam);</li>
+                <li>Include some helper functions, so you could do something like &lt;a href="#" data-bantam-pub="/onpage/alert" data-bantam-msg="Clicked"&gt;A link&lt;/a&gt; and it would automatically publish the event</li>
+                <li>And much more...</li>
+            </ul>
+
+            <p>So, use and abuse this as much as you like - it's available on Github</p>
+            <p>For updates, you should follow me on twitter</p>
+
 
         </section>
 
@@ -144,7 +173,7 @@ var links = document.getElementsByClassName('clicky');
 // bind a function to those clicks
 for (var i = links.length - 1; i >= 0; i--) {
 	links[i].onclick = function (e){
-		bantam.pub('/onpage/click');
+		bantam.pub('/onpage/alert');
 	}
 };
 
@@ -155,7 +184,7 @@ var blurts = document.getElementsByClassName('blurty');
 for (var i = blurts.length - 1; i >= 0; i--) {
 	blurts[i].onclick = function (e) {
 		var msg = this.dataset.secret;
-		bantam.pub('/onpage/click', msg);
+		bantam.pub('/onpage/alert', msg);
 	}
 };
 </script>
