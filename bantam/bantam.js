@@ -38,19 +38,6 @@ File: pubsub.js
 		var args = [].slice.call(arguments); // converts arguments to an array;
 		args.shift(); // pop the topic from the first item. 
 
-		// summary: 
-		//		Publish some data on a named topic.
-		// topic: String
-		//		The channel to publish on
-		//
-		// example:
-		//		Publish stuff on '/some/topic'. Anything subscribed will be called
-		//		with a function signature like: function(a,b,c){ ... }
-		//
-		//	|		fs.msg.pub("/some/topic", 'as', 'many', ['variables', 'as'], {'you' : 'like'});
-
-		//toy.log.console('_M.pub' + topic);
-
 		if(!cache[topic]){ return false; }
 		var fns = cache[topic],
 			x = 0;
@@ -58,7 +45,7 @@ File: pubsub.js
 			fns[x].apply(me, args || []);
 		}
 
-		return true;
+		return topic;
 	};
 
 	me.sub = function(/* String */topic, /* Function */callback){
@@ -78,6 +65,7 @@ File: pubsub.js
 		// example:
 		//	|	fs.msg.sub("/some/topic", function(a, b, c){ /* handle data */ });
 		//
+		if(!callback) {return false;} // because you forgot to add a callback
 		if(!cache[topic]){ cache[topic] = []; }
 		cache[topic].push(callback);
 		return [topic, callback]; // Array
