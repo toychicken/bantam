@@ -1,4 +1,9 @@
-
+/*jslint
+	browser:true,
+	eqeq:true,
+	white:true,
+	todo:true
+ */
 
 /*! pubsub */
 /*
@@ -8,10 +13,8 @@
 	Ensure unsub works as expected
 	Ensure you can overload 
 	Work with Node.js to pass back / forth to server (would we have to write native socket handling shizzle?)
-	* Would it be possible / useful to be able to subscribe many callback functions to one event - or should we simply subscribe many times?
-	* Is a N to 0 iteration over an array really faster than 0 to N?
+	* Is a N to 0 iteration over an array really faster than 0 to N? (But perhaps may be order of subscription dependent? Should b
 	Put better comments in  :)
-	Create a no-conflict mode for the global;
 */
 
 /*
@@ -29,7 +32,7 @@ File: pubsub.js
 */
 
 var Bantam = function(me, undefined){
-	"Use strict";
+	"use strict";
 
 	me = me || this;
 
@@ -37,13 +40,17 @@ var Bantam = function(me, undefined){
 	var cache = {};
 
 	me.pub = function(topic){
-		var args = [].slice.call(arguments); // converts arguments to an array;
+		var args = [].slice.call(arguments), // converts arguments to an array;,
+			fns,
+			x = 0;
 		args.shift(); // pop the topic from the first item. 
 
-		if(!cache[topic]){ return false; }
-		var fns = cache[topic],
-			x = 0;
-		for (x; x < fns.length; x++){
+		if(!cache[topic]){
+			return false;
+		}
+		fns = cache[topic];
+		for (x; x < fns.length; x = x + 1){
+			// do it!
 			fns[x].apply(me, args || []);
 		}
 
@@ -67,7 +74,9 @@ var Bantam = function(me, undefined){
 		// example:
 		//	|	fs.msg.sub("/some/topic", function(a, b, c){ /* handle data */ });
 		//
-		if(!callback) {return false;} // because you forgot to add a callback
+		if(!callback) {
+			return false;
+		} // because you forgot to add a callback
 		if(!cache[topic]){ cache[topic] = []; }
 		cache[topic].push(callback);
 		return [topic, callback]; // Array
