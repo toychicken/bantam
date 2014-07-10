@@ -28,8 +28,10 @@ File: pubsub.js
 		Create some kind of default binding, so that any element with a attribute of data-pub will automatically just publish some data
 */
 
-(function(me, undefined){
+var Bantam = function(me, undefined){
 	"Use strict";
+
+	me = me || this;
 
 	// the topic/subscription hash
 	var cache = {};
@@ -99,6 +101,6 @@ File: pubsub.js
 	    return true; // has successfully unbound
 	};
 
-	//return me;
+	return me;
 
-})(bantam = {});
+};

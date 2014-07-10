@@ -27,8 +27,14 @@
         		.blurty {background:orange;}
 
         </style>
-        <script src="bantam/bantam.js"></script>
-        <script src="assets/js/zepto.1.0rc1.js"></script>
+	    <!-- Get the library kids! -->
+	    <script src="bantam/bantam.js" class="hidden"></script>
+	    <script class="hidden">
+		    // initialise!
+		    var bantam = new Bantam();
+
+	    </script>
+
     </head>
     <body>
     	<img src="assets/images/logo.png" />
@@ -165,10 +171,9 @@ for (var i = blurts.length - 1; i >= 0; i--) {
 
         </section>
 
-
-
 <!-- put some of the scripts down here, because the DOM needs to load properly :) -->
 <script class="hidden">
+
 // find all those clicky links
 var links = document.getElementsByClassName('clicky');
 
